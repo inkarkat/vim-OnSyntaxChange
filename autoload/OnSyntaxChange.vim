@@ -12,7 +12,13 @@
 "	001	25-May-2012	file creation
 
 function! s:GetState( isInsertMode, pattern )
-    return ingointegration#IsOnSyntaxItem(getpos('.'), a:pattern)
+    let l:pos = getpos('.')
+    if a:isInsertMode && col('.') == col('$') && col('.') > 1
+	" When appending at the end of a line, the syntax must be determined
+	" from the character before the cursor.
+	let l:pos[2] -= 1
+    endif
+    return ingointegration#IsOnSyntaxItem(l:pos, a:pattern)
 endfunction
 
 function! OnSyntaxChange#Trigger( isInsertMode, isBuffer )
@@ -21,7 +27,7 @@ function! OnSyntaxChange#Trigger( isInsertMode, isBuffer )
 
     for l:name in keys(l:patterns)
 	let l:previousState = l:states[l:name]
-	let l:currentState  = s:GetState(l:patterns[l:name])
+	let l:currentState  = s:GetState(a:isInsertMode, l:patterns[l:name])
 	if l:previousState != l:currentState
 	    let l:states[l:name] = l:currentState
 
@@ -32,8 +38,8 @@ function! OnSyntaxChange#Trigger( isInsertMode, isBuffer )
 	    endif
 
 	    let l:event =  'Syntax' . l:name . (l:currentState ? 'Enter' : 'Leave') . (a:isInsertMode ? 'I' : '')
-	    execute 'doautocmd User' l:event
-echomsg 'doautocmd User' l:event
+	    execute 'silent doautocmd User' l:event
+"****D echomsg 'doautocmd User' l:event
 	endif
     endfor
 endfunction
@@ -59,13 +65,14 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
 "* RETURN VALUES:
 "   None.
 "******************************************************************************
+    let l:isInsertMode = (mode() =~# '[iR]')
     if a:isBuffer
 	if ! exists('b:OnSyntaxChange_Patterns')
 	    let b:OnSyntaxChange_Patterns = {}
 	    let b:OnSyntaxChange_States = {}
 	endif
 	let b:OnSyntaxChange_Patterns[a:name] = a:syntaxItemPattern
-	let b:OnSyntaxChange_States[a:name] = s:GetState(a:syntaxItemPattern)
+	let b:OnSyntaxChange_States[a:name] = s:GetState(l:isInsertMode, a:syntaxItemPattern)
 
 	augroup OnSyntaxChangeBuffer
 	    autocmd! CursorMoved,BufEnter <buffer> call OnSyntaxChange#Trigger(0, 1)
@@ -77,7 +84,7 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
 	    let g:OnSyntaxChange_States = {}
 	endif
 	let g:OnSyntaxChange_Patterns[a:name] = a:syntaxItemPattern
-	let g:OnSyntaxChange_States[a:name] = s:GetState(a:syntaxItemPattern)
+	let g:OnSyntaxChange_States[a:name] = s:GetState(l:isInsertMode, a:syntaxItemPattern)
 
 	augroup OnSyntaxChangeGlobal
 	    autocmd! CursorMoved,BufEnter * call OnSyntaxChange#Trigger(0, 0)
