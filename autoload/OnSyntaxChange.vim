@@ -1,4 +1,4 @@
-" OnSyntaxChange.vim: summary
+" OnSyntaxChange.vim: Generate events when moving onto / off a syntax group.
 "
 " DEPENDENCIES:
 "   - ingointegration.vim autoload script.
@@ -21,9 +21,9 @@ function! s:GetState( isInsertMode, pattern )
     return ingointegration#IsOnSyntaxItem(l:pos, a:pattern)
 endfunction
 
-function! OnSyntaxChange#Trigger( isInsertMode, isBuffer )
-    let l:patterns = (a:isBuffer ? b:OnSyntaxChange_Patterns : g:OnSyntaxChange_Patterns)
-    let l:states = (a:isBuffer ? b:OnSyntaxChange_States : g:OnSyntaxChange_States)
+function! OnSyntaxChange#Trigger( isInsertMode, isBufferLocal )
+    let l:patterns = (a:isBufferLocal ? b:OnSyntaxChange_Patterns : g:OnSyntaxChange_Patterns)
+    let l:states = (a:isBufferLocal ? b:OnSyntaxChange_States : g:OnSyntaxChange_States)
 
     for l:name in keys(l:patterns)
 	let l:previousState = l:states[l:name]
@@ -31,7 +31,7 @@ function! OnSyntaxChange#Trigger( isInsertMode, isBuffer )
 	if l:previousState != l:currentState
 	    let l:states[l:name] = l:currentState
 
-	    if a:isBuffer && has_key(g:OnSyntaxChange_Patterns, l:name)
+	    if a:isBufferLocal && has_key(g:OnSyntaxChange_Patterns, l:name)
 		" Do not trigger the same event twice when the name is defined
 		" both globally and buffer-local.
 		continue
@@ -44,7 +44,7 @@ function! OnSyntaxChange#Trigger( isInsertMode, isBuffer )
     endfor
 endfunction
 
-function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
+function! OnSyntaxChange#Install( name, syntaxItemPattern, isBufferLocal )
 "******************************************************************************
 "* PURPOSE:
 "   Set up User events for a:pat that fire when the cursor moves onto / away
@@ -60,13 +60,13 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
 "   a:syntaxItemPattern Regular expression that specifies the syntax groups,
 "			e.g. "^Comment$". For matching, the translated,
 "			effective syntax name is used.
-"   a:isBuffer  Flag whether the event should be generated just for the current
-"		buffer, or globally for all buffers.
+"   a:isBufferLocal Flag whether the event should be generated just for the
+"		    current buffer, or globally for all buffers.
 "* RETURN VALUES:
 "   None.
 "******************************************************************************
     let l:isInsertMode = (mode() =~# '[iR]')
-    if a:isBuffer
+    if a:isBufferLocal
 	if ! exists('b:OnSyntaxChange_Patterns')
 	    let b:OnSyntaxChange_Patterns = {}
 	    let b:OnSyntaxChange_States = {}
@@ -74,7 +74,7 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
 	let b:OnSyntaxChange_Patterns[a:name] = a:syntaxItemPattern
 	let b:OnSyntaxChange_States[a:name] = s:GetState(l:isInsertMode, a:syntaxItemPattern)
 
-	augroup OnSyntaxChangeBuffer
+	augroup OnSyntaxChange
 	    autocmd! CursorMoved,BufEnter <buffer> call OnSyntaxChange#Trigger(0, 1)
 	    autocmd! CursorMovedI         <buffer> call OnSyntaxChange#Trigger(1, 1)
 	augroup END
@@ -86,7 +86,7 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
 	let g:OnSyntaxChange_Patterns[a:name] = a:syntaxItemPattern
 	let g:OnSyntaxChange_States[a:name] = s:GetState(l:isInsertMode, a:syntaxItemPattern)
 
-	augroup OnSyntaxChangeGlobal
+	augroup OnSyntaxChange
 	    autocmd! CursorMoved,BufEnter * call OnSyntaxChange#Trigger(0, 0)
 	    autocmd! CursorMovedI         * call OnSyntaxChange#Trigger(1, 0)
 	augroup END
