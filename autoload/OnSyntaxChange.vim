@@ -73,7 +73,9 @@ function! OnSyntaxChange#Trigger( isBufferLocal, isInsertMode, event )
 		continue
 	    endif
 
-	    execute 'doautocmd User' l:event
+	    if exists('#User#' . l:event)
+		execute 'doautocmd User' l:event
+	    endif
 "****D echomsg 'doautocmd User' l:event
 	endfor
     endfor
