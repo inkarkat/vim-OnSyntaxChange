@@ -1,6 +1,7 @@
 " OnSyntaxChange.vim: summary
 "
 " DEPENDENCIES:
+"   - ingointegration.vim autoload script.
 "
 " Copyright: (C) 2012 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
@@ -10,18 +11,29 @@
 " REVISION	DATE		REMARKS
 "	001	25-May-2012	file creation
 
-function! s:GetState( pattern )
+function! s:GetState( isInsertMode, pattern )
     return ingointegration#IsOnSyntaxItem(getpos('.'), a:pattern)
 endfunction
 
-function! OnSyntaxChange#Trigger( isInputMode, patterns, states )
-    for l:name in keys(a:patterns)
-	let l:previousState = a:states[l:name]
-	let l:currentState  = s:GetState(a:patterns[l:name])
+function! OnSyntaxChange#Trigger( isInsertMode, isBuffer )
+    let l:patterns = (a:isBuffer ? b:OnSyntaxChange_Patterns : g:OnSyntaxChange_Patterns)
+    let l:states = (a:isBuffer ? b:OnSyntaxChange_States : g:OnSyntaxChange_States)
+
+    for l:name in keys(l:patterns)
+	let l:previousState = l:states[l:name]
+	let l:currentState  = s:GetState(l:patterns[l:name])
 	if l:previousState != l:currentState
-	    let a:states[l:name] = l:currentState
-	    let l:event =  'Syntax' . l:name . (l:currentState ? 'Enter' : 'Leave') . (a:isInputMode ? 'I' : '')
-	    echomsg 'doautocmd User' l:event
+	    let l:states[l:name] = l:currentState
+
+	    if a:isBuffer && has_key(g:OnSyntaxChange_Patterns, l:name)
+		" Do not trigger the same event twice when the name is defined
+		" both globally and buffer-local.
+		continue
+	    endif
+
+	    let l:event =  'Syntax' . l:name . (l:currentState ? 'Enter' : 'Leave') . (a:isInsertMode ? 'I' : '')
+	    execute 'doautocmd User' l:event
+echomsg 'doautocmd User' l:event
 	endif
     endfor
 endfunction
@@ -56,8 +68,8 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
 	let b:OnSyntaxChange_States[a:name] = s:GetState(a:syntaxItemPattern)
 
 	augroup OnSyntaxChangeBuffer
-	    autocmd! CursorMoved,BufEnter <buffer> call OnSyntaxChange#Trigger(0, b:OnSyntaxChange_Patterns, b:OnSyntaxChange_States)
-	    autocmd! CursorMovedI         <buffer> call OnSyntaxChange#Trigger(1, b:OnSyntaxChange_Patterns, b:OnSyntaxChange_States)
+	    autocmd! CursorMoved,BufEnter <buffer> call OnSyntaxChange#Trigger(0, 1)
+	    autocmd! CursorMovedI         <buffer> call OnSyntaxChange#Trigger(1, 1)
 	augroup END
     else
 	if ! exists('g:OnSyntaxChange_Patterns')
@@ -68,8 +80,8 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBuffer )
 	let g:OnSyntaxChange_States[a:name] = s:GetState(a:syntaxItemPattern)
 
 	augroup OnSyntaxChangeGlobal
-	    autocmd! CursorMoved,BufEnter * call OnSyntaxChange#Trigger(0, g:OnSyntaxChange_Patterns, g:OnSyntaxChange_States)
-	    autocmd! CursorMovedI         * call OnSyntaxChange#Trigger(1, g:OnSyntaxChange_Patterns, g:OnSyntaxChange_States)
+	    autocmd! CursorMoved,BufEnter * call OnSyntaxChange#Trigger(0, 0)
+	    autocmd! CursorMovedI         * call OnSyntaxChange#Trigger(1, 0)
 	augroup END
     endif
 endfunction
