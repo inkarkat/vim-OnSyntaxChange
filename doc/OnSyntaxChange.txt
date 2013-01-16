@@ -30,6 +30,11 @@ definitions, other buffers won't be affected at all.
 
 RELATED WORKS								     *
 
+- hookcursormoved (vimscript #2037) allows to call a registered function when
+  the syntax group under the cursor has changed, or a syntax group of a
+  particular name has been left. It also offers other hooks like change of
+  line number and movement into parentheses.
+
 ==============================================================================
 USAGE							*OnSyntaxChange-usage*
 
