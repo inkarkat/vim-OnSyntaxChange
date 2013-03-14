@@ -89,10 +89,10 @@ mode "i". >
 INSTALLATION					 *OnSyntaxChange-installation*
 
 This script is packaged as a |vimball|. If you have the "gunzip" decompressor
-in your PATH, simply edit the *.vba.gz package in Vim; otherwise, decompress
+in your PATH, simply edit the *.vmb.gz package in Vim; otherwise, decompress
 the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
 vimball or via the |:UseVimball| command. >
-    vim OnSyntaxChange.vba.gz
+    vim OnSyntaxChange*.vmb.gz
     :so %
 To uninstall, use the |:RmVimball| command.
 
@@ -112,11 +112,14 @@ IDEAS							*OnSyntaxChange-ideas*
 ==============================================================================
 HISTORY						      *OnSyntaxChange-history*
 
+1.01	17-Jan-2013
+Do not trigger modeline processing when triggering.
+
 1.00	25-May-2012
 First published version. Started development.
 
 ==============================================================================
-Copyright: (C) 2012 Ingo Karkat
+Copyright: (C) 2012-2013 Ingo Karkat
 The VIM LICENSE applies to this script; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
