@@ -3,12 +3,14 @@
 " DEPENDENCIES:
 "   - ingointegration.vim autoload script.
 "
-" Copyright: (C) 2012 Ingo Karkat
+" Copyright: (C) 2012-2013 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.01.002	17-Jan-2013	Do not trigger modeline processing when
+"				triggering.
 "   1.00.001	25-May-2012	file creation
 let s:save_cpo = &cpo
 set cpo&vim
@@ -73,7 +75,11 @@ function! OnSyntaxChange#Trigger( isBufferLocal, isInsertMode, event )
 		continue
 	    endif
 
-	    execute 'silent doautocmd User' l:event
+	    if v:version == 703 && has('patch438') || v:version > 703
+		execute 'silent doautocmd <nomodeline> User' l:event
+	    else
+		execute 'silent doautocmd              User' l:event
+	    endif
 "****D echomsg 'doautocmd User' l:event
 	endfor
     endfor
