@@ -61,7 +61,7 @@ The mode specifies whether the syntax check should only be performed in
 normal, insert, or any of both modes. For example: >
     call OnSyntaxChange#Install('Comment', '^Comment$', 0, 'a')
 
-To handle the generated events, define one or more|:autocmd| for the |User|
+To handle the generated events, define one or more |:autocmd| for the |User|
 event, matching the event name, e.g. >
     autocmd User SyntaxCommentEnterA unsilent echo "entered comment"
     autocmd User SyntaxCommentLeaveA unsilent echo "left comment"
@@ -84,6 +84,9 @@ mode "i". >
     call OnSyntaxChange#Install('Comment', '^Comment$', 0, 'i')
     autocmd User SyntaxCommentEnterI silent! AcpLock
     autocmd User SyntaxCommentLeaveI silent! AcpUnlock
+Same for the Neocomplete plugin (https://github.com/Shougo/neocomplete.vim): >
+    autocmd User SyntaxCommentEnterI silent! NeoCompleteLock
+    autocmd User SyntaxCommentLeaveI silent! NeoCompleteUnlock
 <
 ==============================================================================
 INSTALLATION					 *OnSyntaxChange-installation*
@@ -124,7 +127,7 @@ Do not trigger modeline processing when triggering.
 First published version. Started development.
 
 ==============================================================================
-Copyright: (C) 2012-2013 Ingo Karkat
+Copyright: (C) 2012-2014 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
