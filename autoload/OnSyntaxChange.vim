@@ -1,7 +1,7 @@
 " OnSyntaxChange.vim: Generate events when moving onto / off a syntax group.
 "
 " DEPENDENCIES:
-"   - ingointegration.vim autoload script.
+"   - ingo/syntaxitem.vim autoload script
 "
 " Copyright: (C) 2012-2013 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
@@ -9,6 +9,8 @@
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.02.003	02-May-2013	Move ingointegration#IsOnSyntaxItem() to
+"				ingo#syntaxitem#IsOnSyntax() in ingo-library.
 "   1.01.002	17-Jan-2013	Do not trigger modeline processing when
 "				triggering.
 "   1.00.001	25-May-2012	file creation
@@ -22,7 +24,7 @@ function! s:GetState( isInsertMode, pattern )
 	" from the character before the cursor.
 	let l:pos[2] -= 1
     endif
-    return ingointegration#IsOnSyntaxItem(l:pos, a:pattern)
+    return ingo#syntaxitem#IsOnSyntax(l:pos, a:pattern)
 endfunction
 
 let s:modeActionForEvent = {
