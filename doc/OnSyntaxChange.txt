@@ -28,6 +28,12 @@ movement noticeably, but the plugin takes care that only necessary hooks are
 installed in the proper scope. So as long as you only have buffer-local
 definitions, other buffers won't be affected at all.
 
+SEE ALSO								     *
+
+- With the SyntaxRange.vim plugin (vimscript #4168), you can define regions in
+  a buffer that are highlighted with a different syntax (which could then
+  trigger this plugin to change buffer options).
+
 RELATED WORKS								     *
 
 - hookcursormoved (vimscript #2037) allows to call a registered function when
