@@ -1,3 +1,2 @@
-autoload/ingointegration.vim
 autoload/OnSyntaxChange.vim
 doc/OnSyntaxChange.txt
