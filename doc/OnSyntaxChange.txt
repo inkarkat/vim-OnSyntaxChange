@@ -79,10 +79,11 @@ EXAMPLE						      *OnSyntaxChange-example*
    and <Space>).
 This should only affect both modes, so mode is "a". Let's do this only for C
 files: >
-    autocmd Filetype c call OnSyntaxChange#Install('CString', 'String$', 1, 'a')
-    autocmd Filetype c autocmd User SyntaxCStringEnterA setlocal list
-    autocmd Filetype c autocmd User SyntaxCStringLeaveA setlocal nolist
-<
+    autocmd FileType c call OnSyntaxChange#Install('CString', 'String$', 1, 'a')
+    autocmd FileType c autocmd User SyntaxCStringEnterA setlocal list
+    autocmd FileType c autocmd User SyntaxCStringLeaveA setlocal nolist
+(Better put these, without the |:autocmd|, into ~/.vim/after/ftplugin/c.vim)
+
 2. To disable the AutoComplPop plugin (vimscript #1879) when inside a
    comment. (Inspired by http://stackoverflow.com/questions/10723499/)
 Let's do this globally. Since the completion only works in insert mode, use
@@ -133,7 +134,7 @@ Do not trigger modeline processing when triggering.
 First published version. Started development.
 
 ==============================================================================
-Copyright: (C) 2012-2015 Ingo Karkat
+Copyright: (C) 2012-2016 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
