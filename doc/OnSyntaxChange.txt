@@ -108,7 +108,7 @@ To uninstall, use the |:RmVimball| command.
 DEPENDENCIES					 *OnSyntaxChange-dependencies*
 
 - Requires Vim 7.0 or higher.
-- Requires the |ingo-library.vim| plugin (vimscript #4433), version 1.005 or
+- Requires the |ingo-library.vim| plugin (vimscript #4433), version 1.023 or
   higher.
 
 ==============================================================================
@@ -133,7 +133,7 @@ Do not trigger modeline processing when triggering.
 First published version. Started development.
 
 ==============================================================================
-Copyright: (C) 2012-2014 Ingo Karkat
+Copyright: (C) 2012-2015 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
