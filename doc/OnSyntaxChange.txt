@@ -75,8 +75,8 @@ event, matching the event name, e.g. >
 
 EXAMPLE						      *OnSyntaxChange-example*
 
-1. Enable 'list' when inside string (e.g. to see the difference between <Tab>
-   and <Space>).
+Enable 'list' when inside string (e.g. to see the difference between <Tab> and
+<Space>).
 This should only affect both modes, so mode is "a". Let's do this only for C
 files: >
     autocmd FileType c call OnSyntaxChange#Install('CString', 'String$', 1, 'a')
@@ -84,8 +84,10 @@ files: >
     autocmd FileType c autocmd User SyntaxCStringLeaveA setlocal nolist
 (Better put these, without the |:autocmd|, into ~/.vim/after/ftplugin/c.vim)
 
-2. To disable the AutoComplPop plugin (vimscript #1879) when inside a
-   comment. (Inspired by http://stackoverflow.com/questions/10723499/)
+------------------------------------------------------------------------------
+
+Disable the AutoComplPop plugin (vimscript #1879) when inside a comment.
+(Inspired by http://stackoverflow.com/questions/10723499/)
 Let's do this globally. Since the completion only works in insert mode, use
 mode "i". >
     call OnSyntaxChange#Install('Comment', '^Comment$', 0, 'i')
@@ -98,10 +100,16 @@ Same for the Neocomplete plugin (https://github.com/Shougo/neocomplete.vim): >
 ==============================================================================
 INSTALLATION					 *OnSyntaxChange-installation*
 
-This script is packaged as a |vimball|. If you have the "gunzip" decompressor
-in your PATH, simply edit the *.vmb.gz package in Vim; otherwise, decompress
-the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
-vimball or via the |:UseVimball| command. >
+The code is hosted in a Git repo at
+    https://github.com/inkarkat/vim-OnSyntaxChange
+You can use your favorite plugin manager, or "git clone" into a directory used
+for Vim |packages|. Releases are on the "stable" branch, the latest unstable
+development snapshot on "master".
+
+This script is also packaged as a |vimball|. If you have the "gunzip"
+decompressor in your PATH, simply edit the *.vmb.gz package in Vim; otherwise,
+decompress the archive first, e.g. using WinZip. Inside Vim, install by
+sourcing the vimball or via the |:UseVimball| command. >
     vim OnSyntaxChange*.vmb.gz
     :so %
 To uninstall, use the |:RmVimball| command.
@@ -121,6 +129,12 @@ TODO							 *OnSyntaxChange-todo*
 
 IDEAS							*OnSyntaxChange-ideas*
 
+CONTRIBUTING					   *OnSyntaxChange-contribute*
+
+Report any bugs, send patches, or suggest features via the issue tracker at
+https://github.com/inkarkat/vim-OnSyntaxChange/issues or email (address
+below).
+
 ==============================================================================
 HISTORY						      *OnSyntaxChange-history*
 
@@ -134,7 +148,7 @@ Do not trigger modeline processing when triggering.
 First published version. Started development.
 
 ==============================================================================
-Copyright: (C) 2012-2016 Ingo Karkat
+Copyright: (C) 2012-2018 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
