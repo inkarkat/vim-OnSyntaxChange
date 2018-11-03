@@ -4,18 +4,10 @@
 "   - ingo/event.vim autoload script
 "   - ingo/syntaxitem.vim autoload script
 "
-" Copyright: (C) 2012-2015 Ingo Karkat
+" Copyright: (C) 2012-2018 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
-"
-" REVISION	DATE		REMARKS
-"   1.02.004	20-Jan-2015	Use ingo#event#TriggerCustom().
-"   1.02.003	02-May-2013	Move ingointegration#IsOnSyntaxItem() to
-"				ingo#syntaxitem#IsOnSyntax() in ingo-library.
-"   1.01.002	17-Jan-2013	Do not trigger modeline processing when
-"				triggering.
-"   1.00.001	25-May-2012	file creation
 let s:save_cpo = &cpo
 set cpo&vim
 
