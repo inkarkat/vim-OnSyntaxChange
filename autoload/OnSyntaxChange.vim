@@ -1,24 +1,26 @@
 " OnSyntaxChange.vim: Generate events when moving onto / off a syntax group.
 "
 " DEPENDENCIES:
-"   - ingo/event.vim autoload script
-"   - ingo/syntaxitem.vim autoload script
+"   - ingo-library.vim plugin
 "
-" Copyright: (C) 2012-2018 Ingo Karkat
+" Copyright: (C) 2012-2019 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:GetState( isInsertMode, pattern )
+function! s:GetState( isInsertMode, Pattern )
     let l:pos = getpos('.')
     if a:isInsertMode && col('.') == col('$') && col('.') > 1
 	" When appending at the end of a line, the syntax must be determined
 	" from the character before the cursor.
 	let l:pos[2] -= 1
     endif
-    return ingo#syntaxitem#IsOnSyntax(l:pos, a:pattern)
+    return (type(a:Pattern) == type(function('tr')) ?
+    \   call(a:Pattern, [a:isInsertMode, l:pos]) :
+    \   ingo#syntaxitem#IsOnSyntax(l:pos, a:Pattern)
+    \)
 endfunction
 
 let s:modeActionForEvent = {
@@ -77,11 +79,11 @@ function! OnSyntaxChange#Trigger( isBufferLocal, isInsertMode, event )
     endfor
 endfunction
 
-function! OnSyntaxChange#Install( name, syntaxItemPattern, isBufferLocal, mode )
+function! OnSyntaxChange#Install( name, SyntaxItemPattern, isBufferLocal, mode )
 "******************************************************************************
 "* PURPOSE:
 "   Set up User events for a:pat that fire when the cursor moves onto / away
-"   from a syntax group matching a:syntaxItemPattern.
+"   from a syntax group matching a:SyntaxItemPattern.
 "* ASSUMPTIONS / PRECONDITIONS:
 "   None.
 "* EFFECTS / POSTCONDITIONS:
@@ -91,7 +93,7 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBufferLocal, mode )
 "* INPUTS:
 "   a:name  Description of the syntax element, to be used in the generated
 "	    event, e.g. "Comment".
-"   a:syntaxItemPattern Regular expression that specifies the syntax groups,
+"   a:SyntaxItemPattern Regular expression that specifies the syntax groups,
 "			e.g. "^Comment$". For matching, the translated,
 "			effective syntax name is used.
 "   a:isBufferLocal Flag whether the event should be generated just for the
@@ -122,12 +124,12 @@ function! OnSyntaxChange#Install( name, syntaxItemPattern, isBufferLocal, mode )
 	    let b:OnSyntaxChange_Patterns = {'n': {}, 'i': {}, 'a': {}}
 	    let b:OnSyntaxChange_States   = {'n': {}, 'i': {}, 'a': {}}
 	endif
-	let b:OnSyntaxChange_Patterns[a:mode][a:name] = a:syntaxItemPattern
-	let b:OnSyntaxChange_States[a:mode][a:name] = s:GetState(l:isInsertMode, a:syntaxItemPattern)
+	let b:OnSyntaxChange_Patterns[a:mode][a:name] = a:SyntaxItemPattern
+	let b:OnSyntaxChange_States[a:mode][a:name] = s:GetState(l:isInsertMode, a:SyntaxItemPattern)
 	let l:scope = '<buffer>'
     else
-	let g:OnSyntaxChange_Patterns[a:mode][a:name] = a:syntaxItemPattern
-	let g:OnSyntaxChange_States[a:mode][a:name] = s:GetState(l:isInsertMode, a:syntaxItemPattern)
+	let g:OnSyntaxChange_Patterns[a:mode][a:name] = a:SyntaxItemPattern
+	let g:OnSyntaxChange_States[a:mode][a:name] = s:GetState(l:isInsertMode, a:SyntaxItemPattern)
 	let l:scope = '*'
     endif
 
