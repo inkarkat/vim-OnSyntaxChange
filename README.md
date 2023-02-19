@@ -1,4 +1,4 @@
-ON SYNTAX CHANGE   
+ON SYNTAX CHANGE
 ===============================================================================
 _by Ingo Karkat_
 
@@ -40,16 +40,22 @@ USAGE
     implementation file .vim/autoload/OnSyntaxChange.vim.
     To set up User events for a particular syntax group, invoke:
 
-    OnSyntaxChange#Install( name, syntaxItemPattern, isBufferLocal, mode )
+    OnSyntaxChange#Install( name, SyntaxItemPattern, isBufferLocal, mode )
 
     You need to give your event definition a name; it is used to differentiate
     different setups and is included in the event names that will be generated:
         Syntax{name}Enter{MODE}
         Syntax{name}Leave{MODE}
 
-    The syntaxItemPattern is a regular expression that matches the syntax group;
+    The SyntaxItemPattern is a regular expression that matches the syntax group;
     both the actual and effective names are considered (e.g. in Vimscript,
     "vimLineComment" is linked to "Comment").
+    Alternatively, you can pass a Funcref that is invoked with an isInsertMode
+    flag as the first argument and the syntax check position as the second
+    argument (which is equal to the cursor position except when appending at the
+    end of a line), and is supposed to return 1 or 0, depending on whether we're
+    currently "on" or "off" the syntax. This can be used for advanced checking,
+    but should in general be avoided for performance reasons.
 
     Events can be generated globally for all buffers, or just for a particular
     buffer; use the latter to create events for particular filetypes (via an
@@ -66,8 +72,8 @@ USAGE
 
 ### EXAMPLE
 
-Enable 'list' when inside string (e.g. to see the difference between <Tab> and
-<Space>).
+Enable 'list' when inside string (e.g. to see the difference between &lt;Tab&gt; and
+&lt;Space&gt;).
 This should only affect both modes, so mode is "a". Let's do this only for C
 files:
 
@@ -76,6 +82,7 @@ files:
     autocmd FileType c autocmd User SyntaxCStringLeaveA setlocal nolist
 
 (Better put these, without the :autocmd, into ~/.vim/after/ftplugin/c.vim)
+(Note: Proper autocmd hygiene, i.e. use of autocmd-groups is recommended.)
 
 ------------------------------------------------------------------------------
 
@@ -128,8 +135,16 @@ below).
 HISTORY
 ------------------------------------------------------------------------------
 
-##### 1.02    RELEASEME
+##### 1.10    19-Feb-2023
+- ENH: Also support Funcref for a:SyntaxItemPattern to allow advanced syntax
+  checking (or skipping syntax queried altogether and instead do a simple
+  pattern matching around the cursor position).
+
+##### 1.02    03-Nov-2018
 - Add dependency to ingo-library ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)).
+
+__You need to separately install ingo-library ([vimscript #4433](http://www.vim.org/scripts/script.php?script_id=4433)) version
+  1.023 (or higher)!__
 
 ##### 1.01    17-Jan-2013
 - Do not trigger modeline processing when triggering.
@@ -138,7 +153,7 @@ HISTORY
 - First published version. Started development.
 
 ------------------------------------------------------------------------------
-Copyright: (C) 2012-2018 Ingo Karkat -
+Copyright: (C) 2012-2023 Ingo Karkat -
 The [VIM LICENSE](http://vimdoc.sourceforge.net/htmldoc/uganda.html#license) applies to this plugin.
 
-Maintainer:     Ingo Karkat <ingo@karkat.de>
+Maintainer:     Ingo Karkat &lt;ingo@karkat.de&gt;
