@@ -89,6 +89,7 @@ files: >
     autocmd FileType c autocmd User SyntaxCStringEnterA setlocal list
     autocmd FileType c autocmd User SyntaxCStringLeaveA setlocal nolist
 (Better put these, without the |:autocmd|, into ~/.vim/after/ftplugin/c.vim)
+(Note: Proper autocmd hygiene, i.e. use of |autocmd-groups| is recommended.)
 
 ------------------------------------------------------------------------------
 
@@ -161,7 +162,7 @@ Do not trigger modeline processing when triggering.
 First published version. Started development.
 
 ==============================================================================
-Copyright: (C) 2012-2019 Ingo Karkat
+Copyright: (C) 2012-2023 Ingo Karkat
 The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>

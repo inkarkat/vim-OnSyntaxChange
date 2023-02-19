@@ -82,6 +82,7 @@ files:
     autocmd FileType c autocmd User SyntaxCStringLeaveA setlocal nolist
 
 (Better put these, without the :autocmd, into ~/.vim/after/ftplugin/c.vim)
+(Note: Proper autocmd hygiene, i.e. use of autocmd-groups is recommended.)
 
 ------------------------------------------------------------------------------
 
@@ -152,7 +153,7 @@ __You need to separately install ingo-library ([vimscript #4433](http://www.vim.
 - First published version. Started development.
 
 ------------------------------------------------------------------------------
-Copyright: (C) 2012-2019 Ingo Karkat -
+Copyright: (C) 2012-2023 Ingo Karkat -
 The [VIM LICENSE](http://vimdoc.sourceforge.net/htmldoc/uganda.html#license) applies to this plugin.
 
 Maintainer:     Ingo Karkat &lt;ingo@karkat.de&gt;
