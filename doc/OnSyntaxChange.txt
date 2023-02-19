@@ -145,7 +145,7 @@ below).
 ==============================================================================
 HISTORY						      *OnSyntaxChange-history*
 
-1.10	RELEASEME
+1.10	19-Feb-2023
 - ENH: Also support Funcref for a:SyntaxItemPattern to allow advanced syntax
   checking (or skipping syntax queried altogether and instead do a simple
   pattern matching around the cursor position).
